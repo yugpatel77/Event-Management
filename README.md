@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 360 Degree Venue and Event Management
 
 **Where luxury and planning meets**
@@ -104,3 +105,7 @@ Please read our contributing guidelines before submitting pull requests.
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details. 
+=======
+# Event-Management
+It is manage diffrent types of events...
+>>>>>>> 049ecb13c4fa9207781cdec1686c30a1bdf4c2ba
