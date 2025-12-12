@@ -1,0 +1,558 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event Registration | 360° Event Manager{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Progress Steps -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <div class="step-item active" id="step-1">
+                                <div class="step-circle bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <small class="text-muted">Personal Info</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="step-item" id="step-2">
+                                <div class="step-circle bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <small class="text-muted">Event Details</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="step-item" id="step-3">
+                                <div class="step-circle bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <small class="text-muted">Payment</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="step-item" id="step-4">
+                                <div class="step-circle bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <small class="text-muted">Confirmation</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registrationForm" method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Step 1: Personal Information -->
+                <div class="step-content" id="step-content-1">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0 fw-bold text-dark">
+                                <i class="fas fa-user me-2 text-primary"></i>Personal Information
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    <div class="invalid-feedback">Please enter your first name.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    <div class="invalid-feedback">Please enter your last name.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <div class="invalid-feedback">Please enter a valid email address.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                    <div class="invalid-feedback">Please enter your phone number.</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="address" class="form-label">Address</label>
+                                    <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">City</label>
+                                    <input type="text" class="form-control" id="city" name="city">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="state" class="form-label">State</label>
+                                    <input type="text" class="form-control" id="state" name="state">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Event Details -->
+                <div class="step-content d-none" id="step-content-2">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0 fw-bold text-dark">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i>Event Details
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Event Summary -->
+                            <div class="event-summary bg-light rounded p-4 mb-4">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                             class="img-fluid rounded" alt="Event">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h5 class="fw-bold mb-2">{{ event.title|default:"Sample Event" }}</h5>
+                                        <p class="text-muted mb-2">{{ event.description|default:"Join us for an amazing event experience."|truncatewords:15 }}</p>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar me-1"></i>{{ event.start_date|date:"M d, Y"|default:"Dec 25, 2024" }}
+                                                </small>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>{{ event.start_time|time:"g:i A"|default:"6:00 PM" }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registration Options -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="ticket_type" class="form-label">Ticket Type *</label>
+                                    <select class="form-select" id="ticket_type" name="ticket_type" required>
+                                        <option value="">Select ticket type</option>
+                                        <option value="standard">Standard - ₹500</option>
+                                        <option value="premium">Premium - ₹1000</option>
+                                        <option value="vip">VIP - ₹2000</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a ticket type.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="quantity" class="form-label">Number of Tickets *</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="10" value="1" required>
+                                    <div class="invalid-feedback">Please enter number of tickets (1-10).</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="special_requirements" class="form-label">Special Requirements</label>
+                                    <textarea class="form-control" id="special_requirements" name="special_requirements" rows="3" 
+                                              placeholder="Any dietary restrictions, accessibility needs, or special requests..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Price Breakdown -->
+                            <div class="price-breakdown bg-light rounded p-3 mt-3">
+                                <h6 class="fw-bold mb-3">Price Breakdown</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Ticket Price:</span>
+                                    <span id="ticket-price">₹0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Quantity:</span>
+                                    <span id="ticket-quantity">1</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Service Fee:</span>
+                                    <span id="service-fee">₹0</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total:</span>
+                                    <span id="total-price">₹0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div class="step-content d-none" id="step-content-3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0 fw-bold text-dark">
+                                <i class="fas fa-credit-card me-2 text-primary"></i>Payment Information
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Payment Methods -->
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">Select Payment Method</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="payment-method-card border rounded p-3 cursor-pointer" data-method="card">
+                                            <div class="d-flex align-items-center">
+                                                <input type="radio" name="payment_method" value="card" id="card" class="me-3" checked>
+                                                <div>
+                                                    <i class="fas fa-credit-card fa-2x text-primary me-2"></i>
+                                                    <span class="fw-semibold">Credit/Debit Card</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="payment-method-card border rounded p-3 cursor-pointer" data-method="upi">
+                                            <div class="d-flex align-items-center">
+                                                <input type="radio" name="payment_method" value="upi" id="upi" class="me-3">
+                                                <div>
+                                                    <i class="fas fa-mobile-alt fa-2x text-success me-2"></i>
+                                                    <span class="fw-semibold">UPI Payment</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Details -->
+                            <div id="card-details">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="card_number" class="form-label">Card Number *</label>
+                                        <input type="text" class="form-control" id="card_number" name="card_number" 
+                                               placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                        <div class="invalid-feedback">Please enter a valid card number.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expiry" class="form-label">Expiry Date *</label>
+                                        <input type="text" class="form-control" id="expiry" name="expiry" 
+                                               placeholder="MM/YY" maxlength="5" required>
+                                        <div class="invalid-feedback">Please enter expiry date.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="cvv" class="form-label">CVV *</label>
+                                        <input type="text" class="form-control" id="cvv" name="cvv" 
+                                               placeholder="123" maxlength="4" required>
+                                        <div class="invalid-feedback">Please enter CVV.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="card_holder" class="form-label">Card Holder Name *</label>
+                                        <input type="text" class="form-control" id="card_holder" name="card_holder" required>
+                                        <div class="invalid-feedback">Please enter card holder name.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- UPI Details -->
+                            <div id="upi-details" style="display: none;">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="upi_id" class="form-label">UPI ID *</label>
+                                        <input type="text" class="form-control" id="upi_id" name="upi_id" 
+                                               placeholder="username@upi" required>
+                                        <div class="invalid-feedback">Please enter a valid UPI ID.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            You will be redirected to your UPI app to complete the payment.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="/terms/" target="_blank">Terms and Conditions</a> and 
+                                    <a href="/privacy/" target="_blank">Privacy Policy</a> *
+                                </label>
+                                <div class="invalid-feedback">You must agree to the terms and conditions.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Confirmation -->
+                <div class="step-content d-none" id="step-content-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center py-5">
+                            <div class="text-success mb-4">
+                                <i class="fas fa-check-circle fa-5x"></i>
+                            </div>
+                            <h3 class="fw-bold text-dark mb-3">Registration Successful!</h3>
+                            <p class="text-muted mb-4">Your event registration has been confirmed. You will receive a confirmation email shortly.</p>
+                            
+                            <div class="registration-details bg-light rounded p-4 mb-4">
+                                <h6 class="fw-bold mb-3">Registration Details</h6>
+                                <div class="row text-start">
+                                    <div class="col-md-6">
+                                        <p><strong>Registration ID:</strong> <span id="reg-id">REG-2024-001</span></p>
+                                        <p><strong>Event:</strong> <span id="event-name">{{ event.title|default:"Sample Event" }}</span></p>
+                                        <p><strong>Date:</strong> <span id="event-date">{{ event.start_date|date:"M d, Y"|default:"Dec 25, 2024" }}</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Name:</strong> <span id="customer-name">John Doe</span></p>
+                                        <p><strong>Email:</strong> <span id="customer-email">john@example.com</span></p>
+                                        <p><strong>Total Paid:</strong> <span id="total-paid">₹500</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <a href="/users/my-bookings/" class="btn btn-primary">
+                                    <i class="fas fa-ticket-alt me-2"></i>View My Bookings
+                                </a>
+                                <a href="/events/" class="btn btn-outline-primary">
+                                    <i class="fas fa-calendar me-2"></i>Browse More Events
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary" id="prev-btn" style="display: none;">
+                        <i class="fas fa-arrow-left me-2"></i>Previous
+                    </button>
+                    <button type="button" class="btn btn-primary" id="next-btn">
+                        Next<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    <button type="submit" class="btn btn-success" id="submit-btn" style="display: none;">
+                        <i class="fas fa-check me-2"></i>Complete Registration
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-circle {
+    transition: all 0.3s ease;
+}
+
+.step-item.active .step-circle {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+}
+
+.step-item.completed .step-circle {
+    background-color: var(--bs-success) !important;
+    color: white !important;
+}
+
+.payment-method-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-method-card:hover {
+    border-color: var(--bs-primary) !important;
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.payment-method-card.selected {
+    border-color: var(--bs-primary) !important;
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .step-item small {
+        font-size: 0.75rem;
+    }
+    
+    .step-circle {
+        width: 35px !important;
+        height: 35px !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+
+// Initialize form
+document.addEventListener('DOMContentLoaded', function() {
+    updateStepDisplay();
+    updatePriceBreakdown();
+    
+    // Event listeners
+    document.getElementById('next-btn').addEventListener('click', nextStep);
+    document.getElementById('prev-btn').addEventListener('click', prevStep);
+    document.getElementById('submit-btn').addEventListener('click', submitForm);
+    
+    // Payment method selection
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', togglePaymentMethod);
+    });
+    
+    // Price calculation
+    document.getElementById('ticket_type').addEventListener('change', updatePriceBreakdown);
+    document.getElementById('quantity').addEventListener('change', updatePriceBreakdown);
+    
+    // Card number formatting
+    document.getElementById('card_number').addEventListener('input', formatCardNumber);
+    document.getElementById('expiry').addEventListener('input', formatExpiry);
+});
+
+function nextStep() {
+    if (validateCurrentStep()) {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            updateStepDisplay();
+        }
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepDisplay();
+    }
+}
+
+function updateStepDisplay() {
+    // Hide all step contents
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.add('d-none');
+    });
+    
+    // Show current step content
+    document.getElementById(`step-content-${currentStep}`).classList.remove('d-none');
+    
+    // Update step indicators
+    document.querySelectorAll('.step-item').forEach((item, index) => {
+        item.classList.remove('active', 'completed');
+        if (index + 1 < currentStep) {
+            item.classList.add('completed');
+        } else if (index + 1 === currentStep) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+    nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
+    submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+}
+
+function validateCurrentStep() {
+    const currentContent = document.getElementById(`step-content-${currentStep}`);
+    const requiredFields = currentContent.querySelectorAll('[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    return isValid;
+}
+
+function togglePaymentMethod() {
+    const method = document.querySelector('input[name="payment_method"]:checked').value;
+    const cardDetails = document.getElementById('card-details');
+    const upiDetails = document.getElementById('upi-details');
+    
+    if (method === 'card') {
+        cardDetails.style.display = 'block';
+        upiDetails.style.display = 'none';
+    } else {
+        cardDetails.style.display = 'none';
+        upiDetails.style.display = 'block';
+    }
+}
+
+function updatePriceBreakdown() {
+    const ticketType = document.getElementById('ticket_type').value;
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+    
+    let ticketPrice = 0;
+    switch(ticketType) {
+        case 'standard': ticketPrice = 500; break;
+        case 'premium': ticketPrice = 1000; break;
+        case 'vip': ticketPrice = 2000; break;
+    }
+    
+    const serviceFee = Math.round(ticketPrice * quantity * 0.05); // 5% service fee
+    const total = (ticketPrice * quantity) + serviceFee;
+    
+    document.getElementById('ticket-price').textContent = `₹${ticketPrice}`;
+    document.getElementById('ticket-quantity').textContent = quantity;
+    document.getElementById('service-fee').textContent = `₹${serviceFee}`;
+    document.getElementById('total-price').textContent = `₹${total}`;
+}
+
+function formatCardNumber(input) {
+    let value = input.target.value.replace(/\D/g, '');
+    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+    input.target.value = value;
+}
+
+function formatExpiry(input) {
+    let value = input.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    input.target.value = value;
+}
+
+function submitForm() {
+    if (validateCurrentStep()) {
+        // Simulate payment processing
+        showSpinner();
+        
+        setTimeout(() => {
+            hideSpinner();
+            currentStep = 4;
+            updateStepDisplay();
+            
+            // Populate confirmation details
+            document.getElementById('customer-name').textContent = 
+                document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value;
+            document.getElementById('customer-email').textContent = document.getElementById('email').value;
+            document.getElementById('total-paid').textContent = document.getElementById('total-price').textContent;
+            
+            showToast('Registration completed successfully!', 'success');
+        }, 2000);
+    }
+}
+</script>
+{% endblock %} 

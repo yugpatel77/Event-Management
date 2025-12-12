@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | 360° Event Manager{% endblock %}
+{% block content %}
+<div class="page-container">
+  <h1 class="mb-3">Admin Dashboard</h1>
+  <div class="row gap-3 flex-center">
+    <div class="col-md-4 mb-3">
+      <div class="glass-card shadow text-center">
+        <div class="mb-2" style="font-size:2.5rem;"><i class="fa fa-users-cog"></i></div>
+        <h4>Manage Users</h4>
+        <p>View and manage all users and roles.</p>
+        <a href="/admin/" class="btn btn-primary btn-sm mt-2">Admin Panel</a>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="glass-card shadow text-center">
+        <div class="mb-2" style="font-size:2.5rem;"><i class="fa fa-calendar-alt"></i></div>
+        <h4>Events</h4>
+        <p>Oversee all events and bookings.</p>
+        <a href="/events/" class="btn btn-primary btn-sm mt-2">View Events</a>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="glass-card shadow text-center">
+        <div class="mb-2" style="font-size:2.5rem;"><i class="fa fa-comments"></i></div>
+        <h4>Chat</h4>
+        <p>Communicate with users and managers.</p>
+        <a href="/communications/inbox/" class="btn btn-primary btn-sm mt-2">Open Chat</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+
+{% block title %}Events | 360° Event Manager{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold text-dark mb-3">Discover Amazing Events</h1>
+            <p class="lead text-muted">Find and book the perfect events for your special occasions</p>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search Events</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   placeholder="Search by event name, venue, or description..."
+                                   value="{{ request.GET.search }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">All Categories</option>
+                                <option value="wedding" {% if request.GET.category == 'wedding' %}selected{% endif %}>Wedding</option>
+                                <option value="corporate" {% if request.GET.category == 'corporate' %}selected{% endif %}>Corporate</option>
+                                <option value="birthday" {% if request.GET.category == 'birthday' %}selected{% endif %}>Birthday</option>
+                                <option value="conference" {% if request.GET.category == 'conference' %}selected{% endif %}>Conference</option>
+                                <option value="concert" {% if request.GET.category == 'concert' %}selected{% endif %}>Concert</option>
+                                <option value="sports" {% if request.GET.category == 'sports' %}selected{% endif %}>Sports</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" 
+                                   value="{{ request.GET.date }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Categories -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a href="?category=wedding" class="btn btn-outline-primary {% if request.GET.category == 'wedding' %}active{% endif %}">
+                    <i class="fas fa-heart me-2"></i>Weddings
+                </a>
+                <a href="?category=corporate" class="btn btn-outline-primary {% if request.GET.category == 'corporate' %}active{% endif %}">
+                    <i class="fas fa-briefcase me-2"></i>Corporate
+                </a>
+                <a href="?category=birthday" class="btn btn-outline-primary {% if request.GET.category == 'birthday' %}active{% endif %}">
+                    <i class="fas fa-birthday-cake me-2"></i>Birthdays
+                </a>
+                <a href="?category=conference" class="btn btn-outline-primary {% if request.GET.category == 'conference' %}active{% endif %}">
+                    <i class="fas fa-users me-2"></i>Conferences
+                </a>
+                <a href="?category=concert" class="btn btn-outline-primary {% if request.GET.category == 'concert' %}active{% endif %}">
+                    <i class="fas fa-music me-2"></i>Concerts
+                </a>
+                <a href="?category=sports" class="btn btn-outline-primary {% if request.GET.category == 'sports' %}active{% endif %}">
+                    <i class="fas fa-futbol me-2"></i>Sports
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Grid -->
+    <div class="row g-4">
+        {% for event in events %}
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+            <div class="card event-card h-100 border-0 shadow-sm">
+                <div class="event-image position-relative">
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         class="card-img-top" alt="{{ event.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="event-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                        <div class="text-center text-white">
+                            <i class="fas fa-play-circle fa-3x mb-2"></i>
+                            <p class="mb-0">View Details</p>
+                        </div>
+                    </div>
+                    <div class="position-absolute top-0 end-0 m-3">
+                        {% if event.status == 'active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% elif event.status == 'pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <h5 class="card-title fw-bold text-dark mb-2">{{ event.title }}</h5>
+                        <p class="card-text text-muted mb-3">{{ event.description|truncatewords:20 }}</p>
+                    </div>
+                    
+                    <div class="event-details mb-3">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-calendar-alt me-1"></i>Date
+                                </small>
+                                <strong class="text-dark">{{ event.start_date|date:"M d, Y" }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-clock me-1"></i>Time
+                                </small>
+                                <strong class="text-dark">{{ event.start_time|time:"g:i A" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-location mb-3">
+                        <small class="text-muted d-block">
+                            <i class="fas fa-map-marker-alt me-1"></i>Location
+                        </small>
+                        <strong class="text-dark">{{ event.venue.name|default:"Venue TBA" }}</strong>
+                    </div>
+                    
+                    <div class="event-meta d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>{{ event.registrations.count }} registered
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <div class="d-grid gap-2">
+                            <a href="/events/{{ event.id }}/" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </a>
+                            <a href="/events/{{ event.id }}/register/" class="btn btn-outline-primary">
+                                <i class="fas fa-ticket-alt me-2"></i>Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="text-muted">
+                <i class="fas fa-calendar-times fa-4x mb-4"></i>
+                <h3 class="mb-3">No Events Found</h3>
+                <p class="lead mb-4">We couldn't find any events matching your criteria.</p>
+                <a href="/events/" class="btn btn-primary">
+                    <i class="fas fa-refresh me-2"></i>View All Events
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if events.has_other_pages %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav aria-label="Event pagination">
+                <ul class="pagination justify-content-center">
+                    {% if events.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ events.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in events.paginator.page_range %}
+                        {% if events.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > events.number|add:'-3' and num < events.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if events.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ events.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.event-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+.event-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.event-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.event-card:hover .event-overlay {
+    opacity: 1;
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.btn-outline-primary.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: none;
+    color: var(--bs-primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .event-card {
+        margin-bottom: 1rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %} 

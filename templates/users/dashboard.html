@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard-container">
+    <h1 style="color: #fff;">Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+    <div class="dashboard-sections">
+        <!-- Profile Summary -->
+        <section class="dashboard-section profile-summary" style="background: #1a2236; color: #fff;">
+            <h2>Profile Summary</h2>
+            <p><strong>Name:</strong> {{ user.get_full_name|default:user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Phone:</strong> {{ user.phone|default:'-' }}</p>
+            <a href="{% url 'users:profile' %}" class="btn btn-primary">Edit Profile</a>
+        </section>
+
+        <!-- Booking Overview -->
+        <section class="dashboard-section booking-overview" style="background: #1a2236; color: #fff;">
+            <h2>Booking Overview</h2>
+            <p><strong>Total Bookings:</strong> {{ total_bookings }}</p>
+            <h3>Upcoming Bookings</h3>
+            <ul>
+                {% for booking in upcoming_bookings %}
+                <li>{{ booking.event_name }} - {{ booking.date }} at {{ booking.venue }} ({{ booking.status }})</li>
+                {% empty %}
+                <li>No upcoming bookings.</li>
+                {% endfor %}
+            </ul>
+            <h3>Past Bookings</h3>
+            <ul>
+                {% for booking in past_bookings %}
+                <li>{{ booking.event_name }} - {{ booking.date }} at {{ booking.venue }} ({{ booking.status }})</li>
+                {% empty %}
+                <li>No past bookings.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Financial Summary -->
+        <section class="dashboard-section financial-summary" style="background: #1a2236; color: #fff;">
+            <h2>Financial Summary</h2>
+            <p><strong>Total Money Spent:</strong> ₹{{ total_money_spent }}</p>
+            {% if outstanding_payments %}
+            <p><strong>Outstanding Payments:</strong> ₹{{ outstanding_payments }}</p>
+            {% endif %}
+        </section>
+
+        <!-- Recent Event Orders -->
+        <section class="dashboard-section recent-orders" style="background: #1a2236; color: #fff;">
+            <h2>Recent Event Orders</h2>
+            <ul>
+                {% for order in recent_orders %}
+                <li>{{ order.event_name }} - {{ order.order_date }} ({{ order.status }})
+                    <a href="#" class="btn btn-sm btn-secondary">View Ticket</a>
+                    <a href="#" class="btn btn-sm btn-secondary">Download Invoice</a>
+                    {% if order.can_cancel %}<a href="#" class="btn btn-sm btn-danger">Cancel</a>{% endif %}
+                </li>
+                {% empty %}
+                <li>No recent orders.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Payment History -->
+        <section class="dashboard-section payment-history" style="background: #1a2236; color: #fff;">
+            <h2>Payment History</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Event</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payment_history %}
+                    <tr>
+                        <td>{{ payment.date }}</td>
+                        <td>{{ payment.event_name }}</td>
+                        <td>₹{{ payment.amount }}</td>
+                        <td>{{ payment.method }}</td>
+                        <td>{{ payment.status }}</td>
+                        <td><a href="#" class="btn btn-sm btn-secondary">Download</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No payment history.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Notifications & Messages -->
+        <section class="dashboard-section notifications" style="background: #1a2236; color: #fff;">
+            <h2>Notifications & Messages</h2>
+            <ul>
+                {% for notification in notifications %}
+                <li>{{ notification.message }} <span class="text-muted">({{ notification.date }})</span></li>
+                {% empty %}
+                <li>No notifications.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Upcoming Events -->
+        <section class="dashboard-section upcoming-events" style="background: #1a2236; color: #fff;">
+            <h2>Upcoming Events</h2>
+            <ul>
+                {% for event in upcoming_events %}
+                <li>{{ event.name }} - {{ event.date }} at {{ event.venue }}</li>
+                {% empty %}
+                <li>No upcoming events.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Wishlist / Saved Events -->
+        <section class="dashboard-section wishlist" style="background: #1a2236; color: #fff;">
+            <h2>Wishlist / Saved Events</h2>
+            <ul>
+                {% for event in wishlist %}
+                <li>{{ event.name }} - {{ event.date }} at {{ event.venue }}</li>
+                {% empty %}
+                <li>No saved events.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Support & Help -->
+        <section class="dashboard-section support" style="background: #1a2236; color: #fff;">
+            <h2>Support & Help</h2>
+            <a href="{% url 'contact' %}" class="btn btn-info">Contact Support</a>
+            <a href="{% url 'faq' %}" class="btn btn-info">FAQ</a>
+        </section>
+
+        <!-- Account Actions -->
+        <section class="dashboard-section account-actions" style="background: #1a2236; color: #fff;">
+            <h2>Account Actions</h2>
+            <a href="{% url 'users:change_password' %}" class="btn btn-warning">Change Password</a>
+            <a href="{% url 'users:logout' %}" class="btn btn-danger">Logout</a>
+        </section>
+    </div>
+</div>
+<style>
+.dashboard-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.dashboard-sections { display: flex; flex-wrap: wrap; gap: 2rem; }
+.dashboard-section { flex: 1 1 400px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 1.5rem; margin-bottom: 2rem; }
+.dashboard-section h2 { margin-top: 0; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { border: 1px solid #eee; padding: 0.5rem; text-align: left; }
+.btn { margin-right: 0.5rem; margin-bottom: 0.5rem; }
+</style>
+{% endblock %} 
